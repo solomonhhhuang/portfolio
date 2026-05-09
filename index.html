@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solomon Huang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #0a0a0a;
+    --dark: #111111;
+    --card-bg: #181818;
+    --border: #2a2a2a;
+    --white: #f0ede8;
+    --muted: #888;
+    --accent: #c8a96e;
+    --accent2: #e84040;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 40px;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.95) 0%, transparent 100%);
+    backdrop-filter: blur(2px);
+  }
+
+  .nav-links { display: flex; gap: 36px; }
+
+  .nav-links a {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+    cursor: pointer;
+  }
+
+  .nav-links a:hover, .nav-links a.active { color: var(--white); }
+
+  .nav-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--white);
+    cursor: pointer;
+  }
+
+  /* ── PAGES ── */
+  .page { display: none; min-height: 100vh; padding-top: 80px; }
+  .page.active { display: block; }
+
+  /* ── HOME GRID ── */
+  #page-home {
+    padding: 80px 0 0;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 4px;
+    min-height: calc(100vh - 80px);
+  }
+
+  .grid-item {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--card-bg);
+    aspect-ratio: 16/9;
+  }
+
+  .grid-item img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.4s;
+    filter: brightness(0.85) saturate(0.9);
+  }
+
+  .grid-item:hover img {
+    transform: scale(1.04);
+    filter: brightness(1) saturate(1.1);
+  }
+
+  .grid-item-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.4s;
+    display: flex;
+    align-items: flex-end;
+    padding: 28px 32px;
+  }
+
+  .grid-item:hover .grid-item-overlay { opacity: 1; }
+
+  .grid-item-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .grid-item-label::before {
+    content: '';
+    display: block;
+    width: 28px; height: 2px;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .grid-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card-bg);
+    border: 1px dashed var(--border);
+    aspect-ratio: 16/9;
+    cursor: pointer;
+    transition: border-color 0.3s, background 0.3s;
+  }
+
+  .grid-placeholder:hover {
+    border-color: var(--accent);
+    background: #1a1a1a;
+  }
+
+  .placeholder-inner {
+    text-align: center;
+  }
+
+  .placeholder-inner svg {
+    width: 40px; height: 40px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .placeholder-inner p {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── GALLERY PAGE ── */
+  #page-gallery, #page-project {
+    padding: 100px 40px 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: clamp(40px, 6vw, 80px);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 0.9;
+    color: var(--white);
+  }
+
+  .page-subtitle {
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    border: 1px solid var(--border);
+    padding: 10px 20px;
+    transition: all 0.2s;
+    background: none;
+  }
+
+  .back-btn:hover {
+    color: var(--white);
+    border-color: var(--white);
+  }
+
+  /* Gallery grid */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+  }
+
+  .gallery-grid .grid-item {
+    aspect-ratio: 4/3;
+  }
+
+  /* Project page masonry-style */
+  .project-grid {
+    columns: 3;
+    column-gap: 4px;
+  }
+
+  .project-img-wrap {
+    break-inside: avoid;
+    margin-bottom: 4px;
+    overflow: hidden;
+    position: relative;
+    cursor: zoom-in;
+  }
+
+  .project-img-wrap img {
+    width: 100%;
+    display: block;
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.3s;
+    filter: brightness(0.9);
+  }
+
+  .project-img-wrap:hover img {
+    transform: scale(1.03);
+    filter: brightness(1);
+  }
+
+  /* Project header info */
+  .project-meta {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 4px;
+  }
+
+  .project-tag {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+  }
+
+  /* ── CONTACT PAGE ── */
+  #page-contact {
+    padding: 120px 40px 60px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  #page-contact .page-title { margin-bottom: 16px; }
+
+  .contact-tagline {
+    font-size: 18px;
+    color: var(--muted);
+    margin-bottom: 64px;
+    max-width: 500px;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .contact-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .form-field.full { grid-column: 1 / -1; }
+
+  .form-field label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .form-field input,
+  .form-field textarea,
+  .form-field select {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: var(--white);
+    padding: 14px 18px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+
+  .form-field input:focus,
+  .form-field textarea:focus,
+  .form-field select:focus {
+    border-color: var(--accent);
+  }
+
+  .form-field textarea { resize: vertical; min-height: 140px; }
+
+  .submit-btn {
+    grid-column: 1 / -1;
+    background: var(--white);
+    color: var(--black);
+    border: none;
+    padding: 18px 48px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    justify-self: start;
+  }
+
+  .submit-btn:hover { background: var(--accent); color: var(--white); }
+
+  .contact-links {
+    display: flex;
+    gap: 32px;
+    margin-top: 56px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+
+  .contact-link {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .contact-link:hover { color: var(--white); }
+
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(0,0,0,0.96);
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox.open { display: flex; }
+
+  .lightbox img {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 24px; right: 32px;
+    font-size: 32px;
+    color: var(--muted);
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+    background: none;
+    border: none;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+
+  .lightbox-close:hover { color: var(--white); }
+
+  /* ── SCROLL TO TOP ── */
+  .scroll-top {
+    position: fixed;
+    bottom: 32px; right: 32px;
+    width: 44px; height: 44px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    z-index: 50;
+    transition: background 0.2s, border-color 0.2s;
+    font-size: 18px;
+  }
+  .scroll-top:hover { background: var(--accent); border-color: var(--accent); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .grid-item { animation: fadeUp 0.5s ease both; }
+  .grid-item:nth-child(1) { animation-delay: 0.05s; }
+  .grid-item:nth-child(2) { animation-delay: 0.1s; }
+  .grid-item:nth-child(3) { animation-delay: 0.15s; }
+  .grid-item:nth-child(4) { animation-delay: 0.2s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .hero-grid { grid-template-columns: 1fr; }
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    .project-grid { columns: 2; }
+    .contact-form { grid-template-columns: 1fr; }
+    #page-gallery, #page-project { padding: 100px 20px 60px; }
+    #page-contact { padding: 100px 20px 60px; }
+    .page-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+  }
+
+  @media (max-width: 480px) {
+    .gallery-grid { grid-template-columns: 1fr; }
+    .project-grid { columns: 1; }
+    nav { padding: 14px 16px; }
+    .nav-links { gap: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-links">
+    <a onclick="showPage('home')" id="nav-home" class="active">My Work</a>
+    <a onclick="showPage('gallery')" id="nav-gallery">Gallery</a>
+    <a onclick="showPage('contact')" id="nav-contact">Contact Me</a>
+  </div>
+  <div class="nav-logo" onclick="showPage('home')">Solomon Huang</div>
+</nav>
+
+<!-- ══════════ HOME PAGE ══════════ -->
+<div class="page active" id="page-home">
+  <div class="hero-grid" id="hero-grid">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<!-- ══════════ GALLERY PAGE ══════════ -->
+<div class="page" id="page-gallery">
+  <div class="page-header">
+    <div>
+      <div class="page-title">All Work</div>
+      <div class="page-subtitle">Browse every project</div>
+    </div>
+  </div>
+  <div class="gallery-grid" id="gallery-grid">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<!-- ══════════ PROJECT PAGE ══════════ -->
+<div class="page" id="page-project">
+  <div class="page-header">
+    <div>
+      <div class="page-title" id="project-title">Project Name</div>
+      <div class="project-meta">
+        <span class="project-tag" id="project-tag">Category</span>
+        <span class="page-subtitle" id="project-date">2024</span>
+      </div>
+    </div>
+    <button class="back-btn" onclick="goBack()">← Back</button>
+  </div>
+  <div class="project-grid" id="project-grid">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<!-- ══════════ CONTACT PAGE ══════════ -->
+<div class="page" id="page-contact">
+  <div class="page-title">Let's Work<br>Together</div>
+  <p class="contact-tagline">Available for commercial projects, editorial shoots, sports coverage, and branded content.</p>
+  <form class="contact-form" onsubmit="handleSubmit(event)">
+    <div class="form-field">
+      <label>First Name</label>
+      <input type="text" placeholder="Alex" required>
+    </div>
+    <div class="form-field">
+      <label>Last Name</label>
+      <input type="text" placeholder="Chen">
+    </div>
+    <div class="form-field full">
+      <label>Email</label>
+      <input type="email" placeholder="alex@example.com" required>
+    </div>
+    <div class="form-field full">
+      <label>Project Type</label>
+      <select>
+        <option value="">Select a category</option>
+        <option>Sports & Athletics</option>
+        <option>Commercial / Brand</option>
+        <option>Editorial</option>
+        <option>Event Coverage</option>
+        <option>Portrait / Profile</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="form-field full">
+      <label>Message</label>
+      <textarea placeholder="Tell me about your project, timeline, and budget…"></textarea>
+    </div>
+    <button type="submit" class="submit-btn">Send Message</button>
+  </form>
+  <div class="contact-links">
+    <a href="#" class="contact-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      Instagram
+    </a>
+    <a href="#" class="contact-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      LinkedIn
+    </a>
+    <a href="mailto:solomonhuang@example.com" class="contact-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Solomon Huang
+    </a>
+  </div>
+</div>
+
+<!-- ══════════ LIGHTBOX ══════════ -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<!-- Scroll to top -->
+<button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+// Replace the placeholder image URLs with your own photos.
+// Each project has a cover image and an array of gallery images.
+// You can add/remove projects freely — the grid will adapt.
+
+const projects = [
+  {
+    id: 'basketball-training',
+    title: 'Basketball Training',
+    tag: 'Sports',
+    date: '2024',
+    // Replace with your actual image URLs:
+    cover: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=900&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=900&q=80',
+      'https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=900&q=80',
+      'https://images.unsplash.com/photo-1519861531473-9200262188bf?w=900&q=80',
+      'https://images.unsplash.com/photo-1577471488278-16eec37ffcc2?w=900&q=80',
+      'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=900&q=80',
+      'https://images.unsplash.com/photo-1608245449230-4ac19066d2d0?w=900&q=80',
+    ]
+  },
+  {
+    id: 'womens-soccer',
+    title: "Women's Soccer",
+    tag: 'Sports',
+    date: '2024',
+    cover: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=900&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=900&q=80',
+      'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=900&q=80',
+      'https://images.unsplash.com/photo-1508098682722-e99c643e7f76?w=900&q=80',
+      'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=900&q=80',
+      'https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?w=900&q=80',
+    ]
+  },
+  {
+    id: 'ubc-basketball',
+    title: 'UBC Basketball',
+    tag: 'Sports',
+    date: '2024',
+    cover: 'https://images.unsplash.com/photo-1515523110800-9415d13b84a8?w=900&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1515523110800-9415d13b84a8?w=900&q=80',
+      'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=900&q=80',
+      'https://images.unsplash.com/photo-1474600056930-615c3d706456?w=900&q=80',
+      'https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=900&q=80',
+      'https://images.unsplash.com/photo-1594623274890-6b45ce7cf44a?w=900&q=80',
+      'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=900&q=80',
+    ]
+  },
+  {
+    id: 'brand-editorial',
+    title: 'Brand Editorial',
+    tag: 'Commercial',
+    date: '2024',
+    cover: 'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=900&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=900&q=80',
+      'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=900&q=80',
+      'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=900&q=80',
+      'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=900&q=80',
+      'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=900&q=80',
+    ]
+  },
+];
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let previousPage = 'home';
+let currentPage = 'home';
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+
+  document.getElementById('page-' + name).classList.add('active');
+  const navEl = document.getElementById('nav-' + name);
+  if (navEl) navEl.classList.add('active');
+
+  previousPage = currentPage;
+  currentPage = name;
+  window.scrollTo(0, 0);
+}
+
+function openProject(id) {
+  const proj = projects.find(p => p.id === id);
+  if (!proj) return;
+
+  document.getElementById('project-title').textContent = proj.title;
+  document.getElementById('project-tag').textContent = proj.tag;
+  document.getElementById('project-date').textContent = proj.date;
+
+  const grid = document.getElementById('project-grid');
+  grid.innerHTML = '';
+  proj.images.forEach((src, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'project-img-wrap';
+    wrap.style.animationDelay = (i * 0.05) + 's';
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = proj.title + ' ' + (i + 1);
+    img.loading = 'lazy';
+    img.onclick = () => openLightbox(src);
+    wrap.appendChild(img);
+    grid.appendChild(wrap);
+  });
+
+  previousPage = currentPage;
+  currentPage = 'project';
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-project').classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  window.scrollTo(0, 0);
+}
+
+function goBack() {
+  if (previousPage === 'project') previousPage = 'home';
+  showPage(previousPage === 'project' ? 'home' : previousPage);
+}
+
+// ── BUILD HOME GRID ───────────────────────────────────────────────────────────
+function buildHeroGrid() {
+  const grid = document.getElementById('hero-grid');
+  grid.innerHTML = '';
+
+  projects.forEach((proj, i) => {
+    const item = document.createElement('div');
+    item.className = 'grid-item';
+    item.style.animationDelay = (i * 0.07) + 's';
+    item.onclick = () => openProject(proj.id);
+
+    const img = document.createElement('img');
+    img.src = proj.cover;
+    img.alt = proj.title;
+    img.loading = i < 2 ? 'eager' : 'lazy';
+
+    const overlay = document.createElement('div');
+    overlay.className = 'grid-item-overlay';
+    const label = document.createElement('div');
+    label.className = 'grid-item-label';
+    label.textContent = proj.title;
+    overlay.appendChild(label);
+
+    item.appendChild(img);
+    item.appendChild(overlay);
+    grid.appendChild(item);
+  });
+
+  // Add placeholder slots so layout always looks good
+  const placeholdersNeeded = projects.length % 2 !== 0 ? 1 : 0;
+  for (let i = 0; i < placeholdersNeeded; i++) {
+    const ph = document.createElement('div');
+    ph.className = 'grid-placeholder';
+    ph.innerHTML = `
+      <div class="placeholder-inner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+        <p>Add Project</p>
+      </div>`;
+    grid.appendChild(ph);
+  }
+}
+
+// ── BUILD GALLERY GRID ────────────────────────────────────────────────────────
+function buildGalleryGrid() {
+  const grid = document.getElementById('gallery-grid');
+  grid.innerHTML = '';
+
+  projects.forEach((proj, i) => {
+    const item = document.createElement('div');
+    item.className = 'grid-item';
+    item.style.animationDelay = (i * 0.06) + 's';
+    item.onclick = () => openProject(proj.id);
+
+    const img = document.createElement('img');
+    img.src = proj.cover;
+    img.alt = proj.title;
+    img.loading = 'lazy';
+
+    const overlay = document.createElement('div');
+    overlay.className = 'grid-item-overlay';
+    const label = document.createElement('div');
+    label.className = 'grid-item-label';
+    label.textContent = proj.title;
+    overlay.appendChild(label);
+
+    item.appendChild(img);
+    item.appendChild(overlay);
+    grid.appendChild(item);
+  });
+}
+
+// ── LIGHTBOX ──────────────────────────────────────────────────────────────────
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeLightbox();
+});
+
+// ── CONTACT FORM ──────────────────────────────────────────────────────────────
+function handleSubmit(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.submit-btn');
+  btn.textContent = 'Message Sent ✓';
+  btn.style.background = '#4caf50';
+  btn.style.color = '#fff';
+  setTimeout(() => {
+    btn.textContent = 'Send Message';
+    btn.style.background = '';
+    btn.style.color = '';
+    e.target.reset();
+  }, 3000);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+buildHeroGrid();
+buildGalleryGrid();
+</script>
+</body>
+</html>
