@@ -1348,15 +1348,15 @@ function buildPhotoGrid(filter) {
     grid.appendChild(card);
   });
 
-  // placeholder to fill incomplete row
-  if (filtered.length % 3 !== 0) {
+  // placeholder to fill incomplete row remoce the */
+/*  if (filtered.length % 3 !== 0) {
     const ph = document.createElement('div');
     ph.className = 'graphic-placeholder';
     ph.innerHTML = `<div class="graphic-placeholder-inner">
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
       <p>In Progress</p>
     </div>`;
-    grid.appendChild(ph);
+    grid.appendChild(ph); */
   }
 }
 
