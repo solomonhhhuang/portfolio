@@ -1137,6 +1137,48 @@ const photoProjects = [
     ]
   },
   {
+    id: 'taiwan',
+    title: 'Taiwan',
+    tag: 'Travel',
+    date: '2026',
+    cover: 'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Taiwan/DSCF1867-cmpr.jpg',
+    images: [
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Taiwan/DSCF1910-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Taiwan/DSCF1818-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Taiwan/DSCF1819-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Taiwan/DSCF1820-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Taiwan/DSCF1822-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Taiwan/DSCF1829-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Taiwan/DSCF1834-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Taiwan/DSCF1843-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Taiwan/DSCF1852-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Taiwan/DSCF1854-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Taiwan/DSCF1856-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Taiwan/DSCF1867-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Taiwan/DSCF1897-cmpr.jpg',
+    ]
+  },
+  {
+    id: 'philippines',
+    title: 'Philippines',
+    tag: 'Travel',
+    date: '2026',
+    cover: 'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Philippines/DSCF1632-cmpr.jpg',
+    images: [
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Philippines/DSCF1632-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Philippines/DSCF1648-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Philippines/DSCF1656-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Philippines/DSCF1690-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Philippines/DSCF1721-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Philippines/DSCF1725-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Philippines/DSCF1738-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Philippines/DSCF1768-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Philippines/DSCF1776-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Philippines/DSCF1782-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Philippines/DSCF1797-cmpr.jpg',
+    ]
+  },
+  {
     id: 'people',
     title: 'People',
     tag: 'Personal',
@@ -1175,6 +1217,7 @@ const photoProjects = [
       'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/People/DSCF1473-cmpr.jpg',
       'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/People/DSCF0316-cmpr.jpg',
       'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/People/DSCF0814-cmpr.jpg',
+      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/People/DSCF0346-cmpr.jpg',
     ]
   },
     {
@@ -1196,7 +1239,6 @@ const photoProjects = [
       'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Montreal/DSCF0299-cmpr.jpg',
       'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Montreal/DSCF0303-cmpr.jpg',
       'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Montreal/DSCF0341-cmpr.jpg',
-      'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Montreal/DSCF0346-cmpr.jpg',
       'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Montreal/DSCF0354-cmpr.jpg',
       'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Montreal/DSCF0356-cmpr.jpg',
       'https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/Montreal/DSCF0395-cmpr.jpg',
@@ -1348,7 +1390,7 @@ function buildPhotoGrid(filter) {
     grid.appendChild(card);
   });
 
-  // placeholder to fill incomplete row
+  // placeholder to fill incomplete row remoce the */
   if (filtered.length % 3 !== 0) {
     const ph = document.createElement('div');
     ph.className = 'graphic-placeholder';
@@ -1356,7 +1398,7 @@ function buildPhotoGrid(filter) {
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
       <p>In Progress</p>
     </div>`;
-    grid.appendChild(ph);
+    grid.appendChild(ph); 
   }
 }
 
