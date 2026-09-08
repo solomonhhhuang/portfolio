@@ -373,13 +373,11 @@
   .project-img-wrap img {
     width: 100%;
     display: block;
-    transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.3s;
-    filter: brightness(0.88);
+    transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);
   }
 
   .project-img-wrap:hover img {
     transform: scale(1.03);
-    filter: brightness(1);
   }
 
   .project-meta {
@@ -396,6 +394,31 @@
     color: var(--accent);
     font-family: 'Barlow Condensed', sans-serif;
     font-weight: 600;
+  }
+
+  /* ─── ALL PHOTOS (masonry, same layout as project pages, no darken) ─── */
+  .all-photos-grid {
+    columns: 3;
+    column-gap: 4px;
+  }
+
+  .all-photos-img-wrap {
+    break-inside: avoid;
+    margin-bottom: 4px;
+    overflow: hidden;
+    background: var(--card-bg);
+    cursor: zoom-in;
+  }
+
+  .all-photos-img-wrap img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);
+  }
+
+  .all-photos-img-wrap:hover img {
+    transform: scale(1.03);
   }
 
   /* ═══════════════════════════════════════
@@ -898,6 +921,7 @@
     .graphics-grid { grid-template-columns: repeat(2, 1fr); }
     .gallery-grid { columns: 2; }
     .project-grid { columns: 2; }
+    .all-photos-grid { columns: 2; }
     .about-intro { grid-template-columns: 1fr; gap: 32px; }
     .about-stats { grid-template-columns: 1fr; }
     .services-list { grid-template-columns: 1fr; }
@@ -911,6 +935,7 @@
   @media (max-width: 540px) {
     .gallery-grid { columns: 1; }
     .project-grid { columns: 1; }
+    .all-photos-grid { columns: 1; }
     .graphics-grid { grid-template-columns: 1fr; }
     nav { padding: 14px 18px; }
     .nav-links { gap: 16px; }
@@ -925,7 +950,7 @@
   <div class="nav-links">
     <a onclick="showPage('home')" id="nav-home" class="active">Home</a>
     <a onclick="showPage('photography')" id="nav-photography">Photography</a>
-    <a onclick="showPage('graphics')" id="nav-graphics">Graphics</a>
+    <a onclick="showPage('graphics')" id="nav-graphics">All Photos</a>
     <a onclick="showPage('about')" id="nav-about">About</a>
   </div>
   <div class="nav-logo" onclick="showPage('home')">Solomon Huang</div>
@@ -945,13 +970,13 @@
         <div class="hero-cta">View Work →</div>
       </div>
     </div>
-    <!-- Graphics half -->
+    <!-- All Photos half -->
     <div class="hero-half" onclick="showPage('graphics')">
-      <div class="hero-half-bg" style="background-image:url('https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1200&q=80')"></div>
+      <div class="hero-half-bg" style="background-image:url('https://raw.githubusercontent.com/solomonhhhuang/portfolio/main/portfolio/China/DSCF2478-cmpr.jpg')"></div>
       <div class="hero-half-content">
-        <div class="hero-tag">Graphics & Design</div>
-        <div class="hero-heading">Visual<br>Identity</div>
-        <div class="hero-sub">Brand graphics, social media kits, posters, and marketing assets designed in Canva.</div>
+        <div class="hero-tag">All Photos</div>
+        <div class="hero-heading">Every<br>Frame</div>
+        <div class="hero-sub">Every photo from every trip, all in one place, newest shots first.</div>
         <div class="hero-cta">View Work →</div>
       </div>
     </div>
@@ -996,25 +1021,16 @@
   <div class="project-grid" id="project-grid"></div>
 </div>
 
-<!-- ══════════ GRAPHICS PAGE ══════════ -->
+<!-- ══════════ ALL PHOTOS PAGE ══════════ -->
 <div class="page" id="page-graphics">
   <div class="page-header">
     <div>
       <div class="page-eyebrow eyebrow-graphics">Solomon Huang</div>
-      <div class="page-title">Graphics<br>& Design</div>
-      <div class="page-subtitle">Canva designs · brand assets · marketing</div>
-    </div>
-    <div class="header-right">
-      <div class="filter-bar" id="graphics-filters">
-        <button class="filter-pill active active-blue" data-gcat="all" onclick="filterGraphics(this)">All</button>
-        <button class="filter-pill" data-gcat="Social Media" onclick="filterGraphics(this)">Social</button>
-        <button class="filter-pill" data-gcat="Poster" onclick="filterGraphics(this)">Posters</button>
-        <button class="filter-pill" data-gcat="Branding" onclick="filterGraphics(this)">Branding</button>
-        <button class="filter-pill" data-gcat="Marketing" onclick="filterGraphics(this)">Marketing</button>
-      </div>
+      <div class="page-title">All Photos</div>
+      <div class="page-subtitle">Every shot, across every trip · newest (highest number) first</div>
     </div>
   </div>
-  <div class="graphics-grid" id="graphics-grid">
+  <div class="all-photos-grid" id="graphics-grid">
     <!-- Populated by JS -->
   </div>
 </div>
@@ -1416,10 +1432,13 @@ function openPhotoProject(id) {
   document.getElementById('project-tag').textContent = proj.tag;
   document.getElementById('project-date').textContent = proj.date;
 
-  lightboxImages = proj.images;
+  // Newest (highest shot number) first -> oldest ends up at the bottom of the grid.
+  const sortedImages = [...proj.images].sort((a, b) => getShotNumber(b) - getShotNumber(a));
+
+  lightboxImages = sortedImages;
   const grid = document.getElementById('project-grid');
   grid.innerHTML = '';
-  proj.images.forEach((src, i) => {
+  sortedImages.forEach((src, i) => {
     const wrap = document.createElement('div');
     wrap.className = 'project-img-wrap';
     const img = document.createElement('img');
@@ -1439,87 +1458,41 @@ function openPhotoProject(id) {
 }
 
 /* ════════════════════════════════════════════════
-   GRAPHICS GRID
+   ALL PHOTOS GRID
+   Flattens every image from every photoProjects entry,
+   pulls the shot number out of its filename (e.g. DSCF1093),
+   and sorts largest number first (smallest at the bottom).
    ════════════════════════════════════════════════ */
-let activeGraphicsFilter = 'all';
+function getShotNumber(src) {
+  const m = src.match(/DSCF(\d+)/i);
+  return m ? parseInt(m[1], 10) : -1;
+}
 
-function buildGraphicsGrid(filter) {
+function getAllPhotosSorted() {
+  const all = [];
+  photoProjects.forEach(proj => {
+    proj.images.forEach(src => {
+      all.push({ src, number: getShotNumber(src), project: proj.title, tag: proj.tag });
+    });
+  });
+  // Largest number first -> smallest number ends up at the bottom of the grid.
+  all.sort((a, b) => b.number - a.number);
+  return all;
+}
+
+function buildGraphicsGrid() {
   const grid = document.getElementById('graphics-grid');
   grid.innerHTML = '';
-  const filtered = filter === 'all'
-    ? graphicProjects
-    : graphicProjects.filter(g => g.cat === filter);
+  const allPhotos = getAllPhotosSorted();
+  lightboxImages = allPhotos.map(p => p.src);
 
-  filtered.forEach(g => {
-    const card = document.createElement('div');
-    card.className = 'graphic-card';
-    card.onclick = () => openGraphicItem(g.id);
-    card.innerHTML = `
-      <img src="${g.cover}" alt="${g.title}" loading="lazy">
-      <div class="graphic-card-overlay">
-        <div class="graphic-card-cat">${g.cat}</div>
-        <div class="graphic-card-title">${g.title}</div>
-        <div class="graphic-card-year">${g.year}</div>
-      </div>`;
-    grid.appendChild(card);
+  allPhotos.forEach((photo, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'all-photos-img-wrap';
+    wrap.onclick = () => openLightbox(i);
+    wrap.innerHTML = `<img src="${photo.src}" alt="${photo.project} #${photo.number}" loading="lazy">`;
+    grid.appendChild(wrap);
   });
-
-  // placeholder
-  if (filtered.length % 3 !== 0) {
-    const ph = document.createElement('div');
-    ph.className = 'graphic-placeholder';
-    ph.innerHTML = `<div class="graphic-placeholder-inner">
-      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-      <p>Add Design</p>
-    </div>`;
-    grid.appendChild(ph);
-  }
-}
-
-function filterGraphics(btn) {
-  document.querySelectorAll('#graphics-filters .filter-pill').forEach(b => {
-    b.classList.remove('active', 'active-blue');
-  });
-  btn.classList.add('active', 'active-blue');
-  activeGraphicsFilter = btn.dataset.gcat;
-  buildGraphicsGrid(activeGraphicsFilter);
-}
-
-function openGraphicItem(id) {
-  const g = graphicProjects.find(x => x.id === id);
-  if (!g) return;
-  document.getElementById('gi-title').textContent = g.title;
-  document.getElementById('gi-cat').textContent = g.cat;
-  document.getElementById('gi-year').textContent = g.year;
-  document.getElementById('gi-description').textContent = g.description;
-
-  lightboxImages = g.images;
-
-  const hero = document.getElementById('gi-hero');
-  const strip = document.getElementById('gi-strip');
-  hero.innerHTML = ''; strip.innerHTML = '';
-
-  const [h1, h2, ...rest] = g.images;
-  [h1, h2].filter(Boolean).forEach((src, i) => {
-    const img = document.createElement('img');
-    img.src = src; img.alt = g.title; img.loading = 'lazy';
-    img.onclick = () => openLightbox(i);
-    hero.appendChild(img);
-  });
-  rest.forEach((src, i) => {
-    const img = document.createElement('img');
-    img.src = src; img.alt = g.title; img.loading = 'lazy';
-    img.onclick = () => openLightbox(i + 2);
-    strip.appendChild(img);
-  });
-
-  previousPage = currentPage;
-  currentPage = 'graphic-item';
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-graphic-item').classList.add('active');
-  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-  document.getElementById('nav-graphics').classList.add('active');
-  window.scrollTo(0, 0);
 }
 
 /* ════════════════════════════════════════════════
